@@ -607,8 +607,8 @@ h3 {
     background: #0f0f12;
     border: 1px solid #333;
     padding: 3rem;
-    width: 600px;
-    /* Wider like the image */
+    width: 90%;
+    max-width: 600px;
     border-radius: 12px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
     text-align: left;
@@ -987,23 +987,90 @@ footer p {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .hero-section {
+        padding-top: 100px;
+    }
+
     .hero-title {
-        font-size: 3rem;
+        font-size: 2.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+
+    .countdown-timer {
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    .time-block {
+        padding: 1rem 0.8rem;
+        min-width: 80px;
+        flex: 1 1 80px;
+    }
+
+    .time-block span {
+        font-size: 2.2rem;
+    }
+
+    .time-block label {
+        font-size: 0.55rem;
+        letter-spacing: 1px;
     }
 
     .offer-layout {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
-    .countdown-timer {
-        gap: 1rem;
+    .offer-content h2 {
+        font-size: 2.2rem;
     }
 
-    .time-block span {
+    .current-price {
+        font-size: 3rem;
+    }
+
+    .modal-content.premium-modal {
+        padding: 2rem 1.5rem;
+    }
+
+    .modal-header h3 {
         font-size: 1.5rem;
     }
 
-    .grid-2 {
+    .grid-2,
+    .grid-3 {
         grid-template-columns: 1fr;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .slot-container {
+        padding: 1rem;
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .time-block {
+        padding: 0.8rem 0.5rem;
+        min-width: 70px;
+    }
+
+    .time-block span {
+        font-size: 1.8rem;
     }
 }

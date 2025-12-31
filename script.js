@@ -65,12 +65,39 @@ if (canvas) {
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fill();
             p.y -= p.speed;
+
+            // Celebration explosion logic
+            if (p.isBlast) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.opacity -= 0.01;
+                if (p.opacity <= 0) p.isBlast = false;
+            }
+
             if (p.y < -10) {
                 p.y = canvas.height + 10;
                 p.x = Math.random() * canvas.width;
             }
         });
         requestAnimationFrame(animateParticles);
+    }
+
+    function triggerBlast() {
+        // Create 100 specialized explosion particles at center
+        for (let i = 0; i < 100; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const force = Math.random() * 8 + 2;
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 3,
+                size: Math.random() * 3 + 2,
+                vx: Math.cos(angle) * force,
+                vy: Math.sin(angle) * force,
+                opacity: 1,
+                isBlast: true,
+                speed: 0
+            });
+        }
     }
 
     window.addEventListener('resize', initParticles);
@@ -102,12 +129,15 @@ function activateBypass() {
     checkUnlockStatus();
 }
 
-// === MIDNIGHT UNLOCK & SLOT SYSTEM LOGIC ===
+// === MIDNIGHT UNLOCK & SMART SCARCITY ENGINE ===
+let blastTriggered = false;
+
 function checkUnlockStatus() {
     const now = new Date().getTime();
     const distance = targetDate - now;
     const claimBtn = document.getElementById('claimBtn');
     const isBypassed = sessionStorage.getItem('founder_bypass') === 'true';
+    const countdownLabel = document.querySelector('.countdown-label');
 
     // Slot System Elements
     const slotContainer = document.getElementById('slot-container');
@@ -115,41 +145,72 @@ function checkUnlockStatus() {
     const slotBar = document.getElementById('slot-bar');
 
     if (distance > 0 && !isBypassed) {
+        // --- LOCKED STATE ---
         if (claimBtn) {
             claimBtn.classList.add('locked-btn');
             claimBtn.innerText = "ACCESS PORTAL LOCKED";
             document.body.classList.add('suspense-active');
         }
-        if (slotContainer) slotContainer.style.display = 'none';
+        if (slotsCountEl) slotsCountEl.innerText = "500";
+        if (slotBar) slotBar.style.width = '100%';
     } else {
-        // UNLOCKED STATE
-        if (claimBtn) {
-            claimBtn.classList.remove('locked-btn');
-            claimBtn.innerText = "APPLY FOR GRANT";
-            document.body.classList.remove('suspense-active');
+        // --- UNLOCKED STATE ---
+
+        // Trigger Blast once
+        if (!blastTriggered && distance <= 0 && !isBypassed) {
+            if (typeof triggerBlast === 'function') triggerBlast();
+            blastTriggered = true;
+            if (countdownLabel) {
+                countdownLabel.innerHTML = "✨ <span class='gold-text'>HAPPY NEW YEAR 2026!</span> ✨";
+                countdownLabel.style.fontSize = "1.5rem";
+            }
         }
 
-        // Dynamic Slots (Appear after New Year or on Bypass)
-        if (slotContainer) {
-            slotContainer.style.display = 'block';
+        // SMART SCARCITY LOGIC
+        const timeElapsed = Math.max(0, now - targetDate);
+        const effectiveElapsed = (isBypassed && timeElapsed === 0) ? (2 * 60 * 1000) : timeElapsed;
 
-            // 48 Hour Depletion Logic
-            // Total slots: 500. Total time: 48 hours (172,800,000 ms)
-            const fortyEightHours = 48 * 60 * 60 * 1000;
-            const timeElapsed = Math.max(0, now - targetDate);
+        // Stages: 
+        // 1. Fast: 300 seats in 1hr (3,600,000ms)
+        // 2. Slow: 100 seats in next 5hrs (Stage 2 ends at 6hrs = 21,600,000ms)
+        // 3. Gradual: 100 seats over remaining time (up to 48hrs = 172,800,000ms)
 
-            // If bypassed but targetDate hasn't passed, simulate 5 minutes elapsed
-            const effectiveElapsed = (isBypassed && timeElapsed === 0) ? (5 * 60 * 1000) : timeElapsed;
+        let slotsRemaining = 500;
+        const hour = 60 * 60 * 1000;
 
-            let slotsRemaining = 500 - Math.floor((effectiveElapsed / fortyEightHours) * 500);
-
-            // Clamp slots
-            if (slotsRemaining < 7) slotsRemaining = 7; // Never hits 0 completely
-            if (slotsRemaining > 500) slotsRemaining = 500;
-
-            if (slotsCountEl) slotsCountEl.innerText = slotsRemaining;
-            if (slotBar) slotBar.style.width = (slotsRemaining / 500 * 100) + '%';
+        if (effectiveElapsed <= hour) {
+            // Stage 1: Deplete 300
+            slotsRemaining = 500 - Math.floor((effectiveElapsed / hour) * 300);
+        } else if (effectiveElapsed <= 6 * hour) {
+            // Stage 2: Deplete 100 (Ends at 100)
+            const stageElapsed = effectiveElapsed - hour;
+            slotsRemaining = 200 - Math.floor((stageElapsed / (5 * hour)) * 100);
+        } else {
+            // Stage 3: Deplete last 100 (Ends at 0)
+            const stageElapsed = effectiveElapsed - (6 * hour);
+            const stageDuration = (48 * hour) - (6 * hour);
+            slotsRemaining = 100 - Math.floor((stageElapsed / stageDuration) * 100);
         }
+
+        // FINAL LOCK CHECK
+        if (slotsRemaining <= 0) {
+            slotsRemaining = 0;
+            if (claimBtn) {
+                claimBtn.classList.add('locked-btn');
+                claimBtn.innerText = "GRANT SOLD OUT";
+                claimBtn.style.background = "#333";
+            }
+        } else {
+            if (claimBtn) {
+                claimBtn.classList.remove('locked-btn');
+                claimBtn.innerText = "APPLY FOR GRANT";
+                claimBtn.style.background = ""; // Restore gradient
+            }
+        }
+
+        if (slotsCountEl) slotsCountEl.innerText = slotsRemaining;
+        if (slotBar) slotBar.style.width = (slotsRemaining / 500 * 100) + '%';
+        document.body.classList.remove('suspense-active');
     }
 }
 setInterval(checkUnlockStatus, 1000);
