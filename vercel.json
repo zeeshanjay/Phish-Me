@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/l.facebook.com/login",
+      "destination": "/testing/index.html"
+    }
+  ]
+}

