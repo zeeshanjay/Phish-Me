@@ -424,8 +424,10 @@ input:focus {
 }
 
 .meta-logo-inline {
-    height: 18px;
+    height: 18px !important;
+    width: auto;
     margin-right: 10px;
+    display: inline-block;
 }
 
 .meta-security-label {
