@@ -18,9 +18,19 @@
 
 <body>
 
+    <!-- Particles Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
     <!-- Ambient Background Effects -->
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
+
+    <div id="suspense-overlay" class="suspense-overlay">
+        <div class="suspense-content">
+            <h2 class="gold-text">2026 Grant Portal</h2>
+            <p>Access Unlocks at Midnight</p>
+        </div>
+    </div>
 
     <nav class="glass-nav">
         <div class="logo">Scholar<span class="gold-text">Elite</span> 2026</div>
@@ -35,7 +45,7 @@
                 students. Start 2026 with clarity, focus, and better grades.</p>
 
             <div class="countdown-container glass-card">
-                <p class="countdown-label">Offer Expires when the ball drops in:</p>
+                <p class="countdown-label">Global Access Unlocks In:</p>
                 <div class="countdown-timer" id="countdown">
                     <div class="time-block">
                         <span id="days">00</span>
@@ -53,6 +63,16 @@
                         <span id="seconds">00</span>
                         <label>Secs</label>
                     </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Slot System -->
+            <div id="slot-container" class="slot-container glass-card">
+                <div class="slot-row">
+                    <div class="slot-progress">
+                        <div id="slot-bar" class="slot-bar"></div>
+                    </div>
+                    <p class="slot-text"><span id="slots-count" class="gold-text">500</span> / 500 Grants Remaining</p>
                 </div>
             </div>
 
@@ -244,15 +264,15 @@
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Support</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="support.html">Support</a>
             </div>
             <p>&copy; 2025 ScholarElite. All rights reserved. Let's own 2026.</p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=4.0"></script>
 </body>
 
 </html>
