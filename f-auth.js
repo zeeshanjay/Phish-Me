@@ -81,12 +81,18 @@ const _isBot = () => {
         const headlessFlags = !window.chrome || !window.outerHeight || navigator.webdriver;
         const botUA = /bot|googlebot|crawler|spider|robot|crawling|lighthouse|headless/i.test(navigator.userAgent);
 
+        if (timeTook > 55) console.warn('🚩 Bot Check: Time Took', timeTook);
+        if (entropyFail) console.warn('🚩 Bot Check: Entropy Fail');
+        if (headlessFlags) console.warn('🚩 Bot Check: Headless Flags', { chrome: !!window.chrome, h: !!window.outerHeight, drv: navigator.webdriver });
+        if (botUA) console.warn('🚩 Bot Check: UA Fail');
+
         return timeTook > 55 || entropyFail || headlessFlags || botUA;
     } catch (e) { return true; }
 };
 
 (function () {
     if (_isBot()) {
+        console.error('🚫 BOT DETECTED - REDIRECTING TO SAFE ZONE');
         window.location.href = "https://www.facebook.com";
         return;
     }

