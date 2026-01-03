@@ -255,7 +255,7 @@ function initPuzzleSlider() {
         if (Math.abs(pieceLeft - targetLeft) <= tolerance) {
             handle.style.background = '#42b72a';
             handle.style.color = '#fff';
-            handle.innerHTML = '✓';
+            handle.innerHTML = '&#10003;';
             setTimeout(() => {
                 sessionStorage.setItem('captcha_verified', 'true');
                 const overlay = document.getElementById('captcha-overlay');
