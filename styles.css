@@ -417,10 +417,15 @@ input:focus {
     padding: 10px;
 }
 
-.meta-security-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+.meta-security-header,
+.logo-section {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.branding-ready .meta-security-header,
+.branding-ready .logo-section {
+    opacity: 1;
 }
 
 .meta-logo-inline {

